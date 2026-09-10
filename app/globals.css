@@ -3,6 +3,9 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --muted: #555555;
+  --border: #e5e5e5;
+  --hover: #f4f4f4;
 }
 
 @theme inline {
@@ -16,11 +19,221 @@
   :root {
     --background: #0a0a0a;
     --foreground: #ededed;
+    --muted: #a3a3a3;
+    --border: #333333;
+    --hover: #1a1a1a;
   }
 }
 
+html {
+  height: 100%;
+}
+
 body {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  margin: 0;
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+}
+
+main {
+  flex: 1;
+}
+
+h1 {
+  margin: 0 0 0.5rem;
+  font-size: 1.5rem;
+}
+
+h2 {
+  margin: 0 0 0.25rem;
+  font-size: 1.125rem;
+}
+
+p {
+  margin: 0.25rem 0;
+}
+
+.muted {
+  color: var(--muted);
+  font-size: 0.875rem;
+}
+
+.site-header,
+.site-footer {
+  border: 0 solid var(--border);
+}
+
+.site-header {
+  border-bottom-width: 1px;
+}
+
+.site-footer {
+  border-top-width: 1px;
+}
+
+.site-header-inner,
+.site-footer-inner,
+.page,
+.hero {
+  max-width: 48rem;
+  margin: 0 auto;
+  padding: 1rem 1.5rem;
+}
+
+.site-header-inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.ward-name {
+  margin: 0;
+  font-size: 1.125rem;
+  font-weight: 600;
+}
+
+.site-footer-inner {
+  text-align: center;
+  font-size: 0.875rem;
+  color: var(--muted);
+}
+
+.nav {
+  display: flex;
+  gap: 1rem;
+}
+
+.nav a {
+  color: var(--muted);
+  text-decoration: none;
+}
+
+.nav a:hover,
+.nav a[aria-current="page"] {
+  color: var(--foreground);
+}
+
+.nav a[aria-current="page"] {
+  font-weight: 600;
+  text-decoration: underline;
+}
+
+.page {
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+}
+
+.page-nav {
+  margin-bottom: 1.5rem;
+}
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  padding-top: 4rem;
+  padding-bottom: 4rem;
+  text-align: center;
+}
+
+.hero-logo {
+  width: 8.8rem;
+  height: auto;
+}
+
+@media (prefers-color-scheme: dark) {
+  .hero-logo {
+    filter: invert(1);
+  }
+}
+
+.hero h1 {
+  font-size: 1.875rem;
+}
+
+.hero p {
+  max-width: 28rem;
+  color: var(--muted);
+}
+
+.button,
+.button-secondary {
+  display: inline-block;
+  padding: 0.6rem 1.2rem;
+  border-radius: 9999px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.button {
+  border: 0;
+  background: var(--foreground);
+  color: var(--background);
+}
+
+.button:hover {
+  opacity: 0.9;
+}
+
+.button-secondary {
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--foreground);
+}
+
+.button-secondary:hover {
+  background: var(--hover);
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.meeting-card {
+  display: block;
+  padding: 1rem;
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  color: inherit;
+  text-decoration: none;
+}
+
+.meeting-card:hover {
+  background: var(--hover);
+}
+
+.meeting-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.meeting-detail ul {
+  margin: 0.25rem 0 0;
+  padding-left: 1.25rem;
+}
+
+@media print {
+  .site-header,
+  .site-footer,
+  .page-nav,
+  .print-hidden {
+    display: none;
+  }
 }

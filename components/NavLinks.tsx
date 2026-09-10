@@ -18,7 +18,7 @@ export default function NavLinks({ links }: NavLinksProps) {
   const pathname = usePathname();
 
   return (
-    <nav aria-label="Primary" className="nav">
+    <nav aria-label="Primary" className="flex gap-4">
       {links.map((link) => {
         const isActive = pathname === link.href;
 
@@ -27,6 +27,11 @@ export default function NavLinks({ links }: NavLinksProps) {
             key={link.href}
             href={link.href}
             aria-current={isActive ? 'page' : undefined}
+            className={
+              isActive
+                ? 'font-semibold text-foreground underline'
+                : 'text-foreground/70 hover:text-foreground'
+            }
           >
             {link.label}
           </Link>

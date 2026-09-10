@@ -14,11 +14,11 @@ export default function Header() {
   });
 
   return (
-    <header className="site-header">
-      <div className="site-header-inner">
+    <header className="border-b border-black/[.08] print:hidden dark:border-white/[.145]">
+      <div className="mx-auto flex max-w-3xl flex-wrap items-center justify-between gap-2 px-6 py-4">
         <div>
-          <p className="ward-name">{WARD_NAME}</p>
-          <p className="muted">{today}</p>
+          <p className="text-lg font-semibold">{WARD_NAME}</p>
+          <p className="text-sm text-foreground/70">{today}</p>
         </div>
         <NavLinks
           links={[

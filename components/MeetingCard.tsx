@@ -20,10 +20,13 @@ export default function MeetingCard({ meeting }: MeetingCardProps) {
   );
 
   return (
-    <Link href={`/meetings/${meeting.id}`} className="meeting-card">
-      <p className="muted">{formattedDate}</p>
-      <h2>{MEETING_TYPE_LABELS[meeting.meetingType]}</h2>
-      <p className="muted">Presiding: {meeting.presiding}</p>
+    <Link
+      href={`/meetings/${meeting.id}`}
+      className="block rounded-lg border border-black/[.08] p-4 transition-colors hover:bg-black/[.03] dark:border-white/[.145] dark:hover:bg-white/[.05]"
+    >
+      <p className="text-sm text-foreground/70">{formattedDate}</p>
+      <h2 className="text-lg font-semibold">{MEETING_TYPE_LABELS[meeting.meetingType]}</h2>
+      <p className="text-sm text-foreground/70">Presiding: {meeting.presiding}</p>
     </Link>
   );
 }

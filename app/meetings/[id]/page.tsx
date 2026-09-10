@@ -16,8 +16,8 @@ export default async function MeetingPage({ params }: MeetingPageProps) {
   }
 
   return (
-    <div className="stack">
-      <div className="actions">
+    <div className="flex flex-col gap-6">
+      <div className="flex justify-end">
         <PrintButton />
       </div>
       <MeetingDetail meeting={meeting} />

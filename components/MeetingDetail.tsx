@@ -19,20 +19,20 @@ export default function MeetingDetail({ meeting }: MeetingDetailProps) {
   );
 
   return (
-    <article className="meeting-detail">
+    <article className="flex flex-col gap-6">
       <header>
-        <p className="muted">{formattedDate}</p>
-        <h1>{MEETING_TYPE_LABELS[meeting.meetingType]}</h1>
-        <p className="muted">
+        <p className="text-sm text-foreground/70">{formattedDate}</p>
+        <h1 className="text-2xl font-bold">{MEETING_TYPE_LABELS[meeting.meetingType]}</h1>
+        <p className="text-sm text-foreground/70">
           Presiding: {meeting.presiding} &middot; Conducting: {meeting.conducting}
         </p>
-        {meeting.stakeBusiness && <p>Stake Business</p>}
+        {meeting.stakeBusiness && <p className="text-sm font-medium">Stake Business</p>}
       </header>
 
       {meeting.announcements && meeting.announcements.length > 0 && (
         <section>
-          <h2>Announcements</h2>
-          <ul>
+          <h2 className="text-lg font-semibold">Announcements</h2>
+          <ul className="list-inside list-disc">
             {meeting.announcements.map((announcement) => (
               <li key={announcement}>{announcement}</li>
             ))}
@@ -41,21 +41,21 @@ export default function MeetingDetail({ meeting }: MeetingDetailProps) {
       )}
 
       <section>
-        <h2>Opening Hymn</h2>
+        <h2 className="text-lg font-semibold">Opening Hymn</h2>
         <p>
           #{meeting.openingHymn.number} &ndash; {meeting.openingHymn.title}
         </p>
       </section>
 
       <section>
-        <h2>Opening Prayer</h2>
+        <h2 className="text-lg font-semibold">Opening Prayer</h2>
         <p>{meeting.openingPrayer}</p>
       </section>
 
       {meeting.wardBusiness.length > 0 && (
         <section>
-          <h2>Ward Business</h2>
-          <ul>
+          <h2 className="text-lg font-semibold">Ward Business</h2>
+          <ul className="list-inside list-disc">
             {meeting.wardBusiness.map((item) => (
               <li key={item.description}>{item.description}</li>
             ))}
@@ -64,7 +64,7 @@ export default function MeetingDetail({ meeting }: MeetingDetailProps) {
       )}
 
       <section>
-        <h2>Sacrament Hymn</h2>
+        <h2 className="text-lg font-semibold">Sacrament Hymn</h2>
         <p>
           #{meeting.sacramentHymn.number} &ndash; {meeting.sacramentHymn.title}
         </p>
@@ -72,8 +72,8 @@ export default function MeetingDetail({ meeting }: MeetingDetailProps) {
 
       {meeting.speakers.length > 0 && (
         <section>
-          <h2>Speakers &amp; Musical Numbers</h2>
-          <ul>
+          <h2 className="text-lg font-semibold">Speakers &amp; Musical Numbers</h2>
+          <ul className="list-inside list-disc">
             {meeting.speakers.map((item) => (
               <li key={`${item.name}-${item.type}`}>
                 {item.name}
@@ -86,14 +86,14 @@ export default function MeetingDetail({ meeting }: MeetingDetailProps) {
       )}
 
       <section>
-        <h2>Closing Hymn</h2>
+        <h2 className="text-lg font-semibold">Closing Hymn</h2>
         <p>
           #{meeting.closingHymn.number} &ndash; {meeting.closingHymn.title}
         </p>
       </section>
 
       <section>
-        <h2>Closing Prayer</h2>
+        <h2 className="text-lg font-semibold">Closing Prayer</h2>
         <p>{meeting.closingPrayer}</p>
       </section>
     </article>

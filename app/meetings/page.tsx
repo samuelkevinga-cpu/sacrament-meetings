@@ -1,11 +1,8 @@
 import MeetingCard from '@/components/MeetingCard';
-import { getBaseUrl } from '@/lib/api-base';
-import type { SacramentMeeting } from '@/lib/types';
+import { loadMeetings } from '@/lib/api-base';
 
 export default async function MeetingsPage() {
-  const baseUrl = await getBaseUrl();
-  const res = await fetch(`${baseUrl}/api/meetings`, { cache: 'no-store' });
-  const meetings: SacramentMeeting[] = await res.json();
+  const meetings = await loadMeetings();
 
   return (
     <div className="stack">

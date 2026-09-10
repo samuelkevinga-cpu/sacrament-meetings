@@ -1,8 +1,7 @@
 import { notFound } from 'next/navigation';
 import MeetingDetail from '@/components/MeetingDetail';
 import PrintButton from '@/components/PrintButton';
-import { getBaseUrl } from '@/lib/api-base';
-import type { SacramentMeeting } from '@/lib/types';
+import { loadMeetingById } from '@/lib/api-base';
 
 interface MeetingPageProps {
   params: Promise<{ id: string }>;
@@ -10,14 +9,11 @@ interface MeetingPageProps {
 
 export default async function MeetingPage({ params }: MeetingPageProps) {
   const { id } = await params;
-  const baseUrl = await getBaseUrl();
-  const res = await fetch(`${baseUrl}/api/meetings/${id}`, { cache: 'no-store' });
+  const meeting = await loadMeetingById(id);
 
-  if (!res.ok) {
+  if (!meeting) {
     notFound();
   }
-
-  const meeting: SacramentMeeting = await res.json();
 
   return (
     <div className="stack">

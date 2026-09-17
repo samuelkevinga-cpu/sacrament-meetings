@@ -1,5 +1,5 @@
 import { redirect } from 'next/navigation';
-import { getMeetings } from '@/lib/meetings-db';
+import { getMeetingsByDate } from '@/lib/meetings-db';
 
 // Must be computed per request, not baked in at build time.
 export const dynamic = 'force-dynamic';
@@ -19,9 +19,9 @@ function getUpcomingSundayIso(): string {
   return `${year}-${month}-${day}`;
 }
 
-export default function CurrentMeetingPage() {
+export default async function CurrentMeetingPage() {
   const sundayDate = getUpcomingSundayIso();
-  const [meeting] = getMeetings(sundayDate);
+  const [meeting] = await getMeetingsByDate(sundayDate);
 
   if (!meeting) {
     redirect('/meetings');

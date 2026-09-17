@@ -10,6 +10,7 @@ const MEETING_TYPE_LABELS: Record<SacramentMeeting['meetingType'], string> = {
   regular: 'Regular Meeting',
   stake: 'Stake Meeting',
   general: 'General Conference',
+  special: 'Special Meeting',
 };
 
 export default function MeetingCard({ meeting }: MeetingCardProps) {

@@ -1,0 +1,133 @@
+﻿import { neon } from '@neondatabase/serverless';
+import type { SacramentMeeting } from './types';
+
+const ITEMS_PER_PAGE = 5;
+
+function getSql() {
+  if (!process.env.DATABASE_URL) {
+    throw new Error('DATABASE_URL is not configured');
+  }
+  return neon(process.env.DATABASE_URL);
+}
+
+export async function getMeetings(query = '', currentPage = 1): Promise<SacramentMeeting[]> {
+  const searchTerm = `%${query}%`;
+  const offset = (Math.max(currentPage, 1) - 1) * ITEMS_PER_PAGE;
+  const rows = await getSql()`
+    SELECT id, to_char(date, 'YYYY-MM-DD') AS "date",
+      meeting_type AS "meetingType", presiding, conducting, announcements,
+      opening_hymn AS "openingHymn", opening_prayer AS "openingPrayer",
+      ward_business AS "wardBusiness", stake_business AS "stakeBusiness",
+      sacrament_hymn AS "sacramentHymn", speakers,
+      closing_hymn AS "closingHymn", closing_prayer AS "closingPrayer"
+    FROM meetings
+    WHERE presiding ILIKE ${searchTerm}
+       OR conducting ILIKE ${searchTerm}
+       OR meeting_type ILIKE ${searchTerm}
+       OR speakers::text ILIKE ${searchTerm}
+    ORDER BY date DESC
+    LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset}
+  `;
+  return rows as unknown as SacramentMeeting[];
+}
+
+export async function getMeetingsTotalPages(query = ''): Promise<number> {
+  const searchTerm = `%${query}%`;
+  const rows = await getSql()`
+    SELECT COUNT(*) AS count FROM meetings
+    WHERE presiding ILIKE ${searchTerm}
+       OR conducting ILIKE ${searchTerm}
+       OR meeting_type ILIKE ${searchTerm}
+       OR speakers::text ILIKE ${searchTerm}
+  `;
+  return Math.ceil(Number(rows[0].count) / ITEMS_PER_PAGE);
+}
+
+export async function getMeetingsByDate(date: string): Promise<SacramentMeeting[]> {
+  const rows = await getSql()`
+    SELECT id, to_char(date, 'YYYY-MM-DD') AS "date",
+      meeting_type AS "meetingType", presiding, conducting, announcements,
+      opening_hymn AS "openingHymn", opening_prayer AS "openingPrayer",
+      ward_business AS "wardBusiness", stake_business AS "stakeBusiness",
+      sacrament_hymn AS "sacramentHymn", speakers,
+      closing_hymn AS "closingHymn", closing_prayer AS "closingPrayer"
+    FROM meetings WHERE date = ${date}::date
+  `;
+  return rows as unknown as SacramentMeeting[];
+}
+
+export async function getMeetingById(id: number): Promise<SacramentMeeting | null> {
+  const rows = await getSql()`
+    SELECT id, to_char(date, 'YYYY-MM-DD') AS "date",
+      meeting_type AS "meetingType", presiding, conducting, announcements,
+      opening_hymn AS "openingHymn", opening_prayer AS "openingPrayer",
+      ward_business AS "wardBusiness", stake_business AS "stakeBusiness",
+      sacrament_hymn AS "sacramentHymn", speakers,
+      closing_hymn AS "closingHymn", closing_prayer AS "closingPrayer"
+    FROM meetings WHERE id = ${id}
+  `;
+  return (rows[0] as unknown as SacramentMeeting) ?? null;
+}
+
+export async function addMeeting(
+  data: Omit<SacramentMeeting, 'id'>
+): Promise<SacramentMeeting> {
+  const rows = await getSql()`
+    INSERT INTO meetings (
+      date, meeting_type, presiding, conducting, announcements,
+      opening_hymn, opening_prayer, ward_business, stake_business,
+      sacrament_hymn, speakers, closing_hymn, closing_prayer
+    )
+    VALUES (
+      ${data.date}, ${data.meetingType}, ${data.presiding}, ${data.conducting},
+      ${data.announcements ?? []}, ${JSON.stringify(data.openingHymn)},
+      ${data.openingPrayer}, ${JSON.stringify(data.wardBusiness)},
+      ${data.stakeBusiness}, ${JSON.stringify(data.sacramentHymn)},
+      ${JSON.stringify(data.speakers)}, ${JSON.stringify(data.closingHymn)},
+      ${data.closingPrayer}
+    )
+    RETURNING id, to_char(date, 'YYYY-MM-DD') AS "date",
+      meeting_type AS "meetingType", presiding, conducting, announcements,
+      opening_hymn AS "openingHymn", opening_prayer AS "openingPrayer",
+      ward_business AS "wardBusiness", stake_business AS "stakeBusiness",
+      sacrament_hymn AS "sacramentHymn", speakers,
+      closing_hymn AS "closingHymn", closing_prayer AS "closingPrayer"
+  `;
+  return rows[0] as unknown as SacramentMeeting;
+}
+
+export async function updateMeeting(
+  id: number,
+  updates: Partial<SacramentMeeting>
+): Promise<SacramentMeeting | null> {
+  const data = updates as Omit<SacramentMeeting, 'id'>;
+  const rows = await getSql()`
+    UPDATE meetings
+    SET date = ${data.date}, meeting_type = ${data.meetingType},
+      presiding = ${data.presiding}, conducting = ${data.conducting},
+      announcements = ${data.announcements ?? []},
+      opening_hymn = ${JSON.stringify(data.openingHymn)},
+      opening_prayer = ${data.openingPrayer},
+      ward_business = ${JSON.stringify(data.wardBusiness)},
+      stake_business = ${data.stakeBusiness},
+      sacrament_hymn = ${JSON.stringify(data.sacramentHymn)},
+      speakers = ${JSON.stringify(data.speakers)},
+      closing_hymn = ${JSON.stringify(data.closingHymn)},
+      closing_prayer = ${data.closingPrayer}
+    WHERE id = ${id}
+    RETURNING id, to_char(date, 'YYYY-MM-DD') AS "date",
+      meeting_type AS "meetingType", presiding, conducting, announcements,
+      opening_hymn AS "openingHymn", opening_prayer AS "openingPrayer",
+      ward_business AS "wardBusiness", stake_business AS "stakeBusiness",
+      sacrament_hymn AS "sacramentHymn", speakers,
+      closing_hymn AS "closingHymn", closing_prayer AS "closingPrayer"
+  `;
+  return (rows[0] as unknown as SacramentMeeting) ?? null;
+}
+
+export async function deleteMeeting(id: number): Promise<boolean> {
+  const rows = await getSql()`
+    DELETE FROM meetings WHERE id = ${id} RETURNING id
+  `;
+  return rows.length > 0;
+}

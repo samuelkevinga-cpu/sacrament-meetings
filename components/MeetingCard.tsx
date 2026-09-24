@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { deleteMeeting } from '@/lib/actions';
 import type { SacramentMeeting } from '@/lib/types';
 
 interface MeetingCardProps {
@@ -19,15 +20,30 @@ export default function MeetingCard({ meeting }: MeetingCardProps) {
     'en-US',
     { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }
   );
+  const deleteAction = deleteMeeting.bind(null, meeting.id);
 
   return (
-    <Link
-      href={`/meetings/${meeting.id}`}
-      className="block rounded-lg border border-black/[.08] p-4 transition-colors hover:bg-black/[.03] dark:border-white/[.145] dark:hover:bg-white/[.05]"
-    >
-      <p className="text-sm text-foreground/70">{formattedDate}</p>
-      <h2 className="text-lg font-semibold">{MEETING_TYPE_LABELS[meeting.meetingType]}</h2>
-      <p className="text-sm text-foreground/70">Presiding: {meeting.presiding}</p>
-    </Link>
+    <div className="rounded-lg border border-black/[.08] p-4 dark:border-white/[.145]">
+      <Link
+        href={`/meetings/${meeting.id}`}
+        className="block transition-colors hover:bg-black/[.03] dark:hover:bg-white/[.05]"
+      >
+        <p className="text-sm text-foreground/70">{formattedDate}</p>
+        <h2 className="text-lg font-semibold">
+          {MEETING_TYPE_LABELS[meeting.meetingType]}
+        </h2>
+        <p className="text-sm text-foreground/70">
+          Presiding: {meeting.presiding}
+        </p>
+      </Link>
+      <form action={deleteAction} className="mt-3">
+        <button type="submit" className="text-sm text-red-600 underline">
+          Delete
+        </button>
+        <Link href={`/meetings/${meeting.id}/edit`} className="ml-4 text-sm underline">
+          Edit
+        </Link>
+      </form>
+    </div>
   );
 }

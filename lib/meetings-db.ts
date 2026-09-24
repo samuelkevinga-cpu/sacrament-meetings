@@ -69,19 +69,65 @@ export async function getMeetingById(id: number): Promise<SacramentMeeting | nul
   return (rows[0] as unknown as SacramentMeeting) ?? null;
 }
 
-// Mutations will be implemented with the Week 04 forms.
-export async function addMeeting(_data: Omit<SacramentMeeting, 'id'>): Promise<SacramentMeeting> {
-  void _data;
-  throw new Error('addMeeting: database implementation coming in Week 04');
+export async function addMeeting(
+  data: Omit<SacramentMeeting, 'id'>
+): Promise<SacramentMeeting> {
+  const rows = await getSql()`
+    INSERT INTO meetings (
+      date, meeting_type, presiding, conducting, announcements,
+      opening_hymn, opening_prayer, ward_business, stake_business,
+      sacrament_hymn, speakers, closing_hymn, closing_prayer
+    )
+    VALUES (
+      ${data.date}, ${data.meetingType}, ${data.presiding}, ${data.conducting},
+      ${data.announcements ?? []}, ${JSON.stringify(data.openingHymn)},
+      ${data.openingPrayer}, ${JSON.stringify(data.wardBusiness)},
+      ${data.stakeBusiness}, ${JSON.stringify(data.sacramentHymn)},
+      ${JSON.stringify(data.speakers)}, ${JSON.stringify(data.closingHymn)},
+      ${data.closingPrayer}
+    )
+    RETURNING id, to_char(date, 'YYYY-MM-DD') AS "date",
+      meeting_type AS "meetingType", presiding, conducting, announcements,
+      opening_hymn AS "openingHymn", opening_prayer AS "openingPrayer",
+      ward_business AS "wardBusiness", stake_business AS "stakeBusiness",
+      sacrament_hymn AS "sacramentHymn", speakers,
+      closing_hymn AS "closingHymn", closing_prayer AS "closingPrayer"
+  `;
+  return rows[0] as unknown as SacramentMeeting;
 }
 
-export async function updateMeeting(_id: number, _updates: Partial<SacramentMeeting>): Promise<SacramentMeeting | null> {
-  void _id;
-  void _updates;
-  throw new Error('updateMeeting: database implementation coming in Week 04');
+export async function updateMeeting(
+  id: number,
+  updates: Partial<SacramentMeeting>
+): Promise<SacramentMeeting | null> {
+  const data = updates as Omit<SacramentMeeting, 'id'>;
+  const rows = await getSql()`
+    UPDATE meetings
+    SET date = ${data.date}, meeting_type = ${data.meetingType},
+      presiding = ${data.presiding}, conducting = ${data.conducting},
+      announcements = ${data.announcements ?? []},
+      opening_hymn = ${JSON.stringify(data.openingHymn)},
+      opening_prayer = ${data.openingPrayer},
+      ward_business = ${JSON.stringify(data.wardBusiness)},
+      stake_business = ${data.stakeBusiness},
+      sacrament_hymn = ${JSON.stringify(data.sacramentHymn)},
+      speakers = ${JSON.stringify(data.speakers)},
+      closing_hymn = ${JSON.stringify(data.closingHymn)},
+      closing_prayer = ${data.closingPrayer}
+    WHERE id = ${id}
+    RETURNING id, to_char(date, 'YYYY-MM-DD') AS "date",
+      meeting_type AS "meetingType", presiding, conducting, announcements,
+      opening_hymn AS "openingHymn", opening_prayer AS "openingPrayer",
+      ward_business AS "wardBusiness", stake_business AS "stakeBusiness",
+      sacrament_hymn AS "sacramentHymn", speakers,
+      closing_hymn AS "closingHymn", closing_prayer AS "closingPrayer"
+  `;
+  return (rows[0] as unknown as SacramentMeeting) ?? null;
 }
 
-export async function deleteMeeting(_id: number): Promise<boolean> {
-  void _id;
-  throw new Error('deleteMeeting: database implementation coming in Week 04');
+export async function deleteMeeting(id: number): Promise<boolean> {
+  const rows = await getSql()`
+    DELETE FROM meetings WHERE id = ${id} RETURNING id
+  `;
+  return rows.length > 0;
 }

@@ -1,3 +1,4 @@
+import type { Metadata } from 'next';
 import MeetingCard from '@/components/MeetingCard';
 import MeetingSearch from '@/components/MeetingSearch';
 import Pagination from '@/components/Pagination';
@@ -8,6 +9,11 @@ interface MeetingsPageProps {
 }
 
 export const dynamic = 'force-dynamic';
+
+export const metadata: Metadata = {
+  title: 'Meetings',
+  description: 'View upcoming and past sacrament meeting programs.',
+};
 
 export default async function MeetingsPage({
   searchParams,

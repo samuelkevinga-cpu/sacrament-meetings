@@ -15,8 +15,19 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'Sacrament Meeting Planner',
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000'
+  ),
+  title: {
+    default: 'Sacrament Meeting Planner',
+    template: '%s | Sacrament Meeting Planner',
+  },
   description: 'Plan, manage, and review sacrament meeting agendas.',
+  openGraph: {
+    title: 'Sacrament Meeting Planner',
+    description: 'Plan, manage, and review sacrament meeting agendas.',
+    images: ['/logo.svg'],
+  },
   icons: {
     icon: [{ url: '/logo.svg', type: 'image/svg+xml' }],
   },
